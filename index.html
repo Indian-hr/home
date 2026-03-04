@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HR Compliance Dashboard</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-blue: #0d6efd;
+            --dark-blue: #0a58ca;
+            --light-bg: #f8f9fa;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Sidebar Styling */
+        .sidebar {
+            height: 100vh;
+            width: 250px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #ffffff;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+            transition: all 0.3s;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            background-color: var(--primary-blue);
+            color: white;
+            text-align: center;
+        }
+
+        .nav-link {
+            color: #555;
+            padding: 15px 20px;
+            font-weight: 500;
+            border-left: 4px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .nav-link:hover {
+            background-color: #eef4ff;
+            color: var(--primary-blue);
+        }
+
+        .nav-link.active {
+            background-color: #eef4ff;
+            color: var(--primary-blue);
+            border-left: 4px solid var(--primary-blue);
+        }
+
+        .nav-link i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Main Content Styling */
+        .main-content {
+            margin-left: 250px;
+            padding: 30px;
+            transition: all 0.3s;
+        }
+
+        /* Page Sections */
+        .page-section {
+            display: none; /* Hidden by default */
+            animation: fadeIn 0.5s;
+        }
+
+        .page-section.active-section {
+            display: block; /* Show active */
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Cards */
+        .act-card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+            height: 100%;
+        }
+
+        .act-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .act-icon {
+            font-size: 2.5rem;
+            color: var(--primary-blue);
+            margin-bottom: 15px;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                margin-left: -250px;
+            }
+            .sidebar.active {
+                margin-left: 0;
+            }
+            .main-content {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h4><i class="fa-solid fa-scale-balanced"></i> HR Acts</h4>
+            <small>Compliance Dashboard</small>
+        </div>
+        <ul class="nav flex-column mt-3">
+            <li class="nav-item">
+                <a href="#" class="nav-link active" onclick="showPage('home', this)">
+                    <i class="fa-solid fa-house"></i> Home
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link" onclick="showPage('pf', this)">
+                    <i class="fa-solid fa-hand-holding-dollar"></i> Provident Fund (PF)
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link" onclick="showPage('esic', this)">
+                    <i class="fa-solid fa-heart-pulse"></i> ESIC
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link" onclick="showPage('gratuity', this)">
+                    <i class="fa-solid fa-piggy-bank"></i> Gratuity
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link" onclick="showPage('shops', this)">
+                    <i class="fa-solid fa-store"></i> Shops & Est.
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link" onclick="showPage('bocw', this)">
+                    <i class="fa-solid fa-hard-hat"></i> BOCW Act
+                </a>
+            </li>
+            <li class="nav-item mt-4">
+                <a href="#" class="nav-link" onclick="showPage('enquiry', this)">
+                    <i class="fa-solid fa-envelope-open-text"></i> Enquiry Form
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Main Content Area -->
+    <div class="main-content">
+        
+        <!-- Top Navbar for Mobile Toggle -->
+        <nav class="navbar navbar-light bg-white mb-4 shadow-sm rounded">
+            <div class="container-fluid">
+                <button class="btn btn-outline-primary d-md-none" onclick="toggleSidebar()">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <span class="navbar-brand mb-0 h1 ms-2">Dashboard</span>
+                <div class="d-flex align-items-center">
+                    <span class="me-3 text-muted">Welcome, HR Manager</span>
+                    <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 35px; height: 35px;">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- 1. HOME PAGE -->
+        <div id="home" class="page-section active-section">
+            <h2 class="mb-4">Welcome to HR Compliance Portal</h2>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card act-card p-4 text-center">
+                        <i class="fa-solid fa-check-circle act-icon text-success"></i>
+                        <h5>Compliance Status</h5>
+                        <p class="text-muted">All statutory filings are up to date.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card act-card p-4 text-center">
+                        <i class="fa-solid fa-file-invoice-dollar act-icon text-primary"></i>
+                        <h5>Next Due Date</h5>
+                        <p class="text-muted">PF Return: 15th of Next Month</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card act-card p-4 text-center">
+                        <i class="fa-solid fa-users act-icon text-info"></i>
+                        <h5>Employee Count</h5>
+                        <p class="text-muted">Total Active: 142</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-5">
+                <h4>Quick Access</h4>
+                <p>Select an act from the sidebar to view details and regulations.</p>
+            </div>
+        </div>
+
+        <!-- 2. PF PAGE -->
+        <div id="pf" class="page-section">
+            <h2 class="mb-4 text-primary"><i class="fa-solid fa-hand-holding-dollar"></i> Provident Fund (EPF)</h2>
+            <div class="card act-card p-4">
+                <h5>Overview</h5>
+                <p>The Employees' Provident Fund and Miscellaneous Provisions Act, 1952 provides for the institution of provident funds, pension funds and deposit-linked insurance fund for employees.</p>
+                <hr>
+                <h6>Key Highlights:</h6>
+                <ul>
+                    <li>Applicable to establishments with 20+ employees.</li>
+                    <li>Employer contribution: 12% of Basic + DA.</li>
+                    <li>Employee contribution: 12% of Basic + DA.</li>
+                </ul>
+                <button class="btn btn-primary mt-3">Download PF Forms</button>
+            </div>
+        </div>
+
+        <!-- 3. ESIC PAGE -->
+        <div id="esic" class="page-section">
+            <h2 class="mb-4 text-primary"><i class="fa-solid fa-heart-pulse"></i> Employee State Insurance (ESIC)</h2>
+            <div class="card act-card p-4">
+                <h5>Overview</h5>
+                <p>The ESI Act provides for certain benefits to employees in case of sickness, maternity and employment injury.</p>
+                <hr>
+                <h6>Eligibility:</h6>
+                <p>Applicable to non-seasonal factories using power and employing 10+ workers (wage limit: ₹21,000).</p>
+                <div class="alert alert-info mt-3">
+                    <i class="fa-solid fa-info-circle"></i> <strong>Note:</strong> Employer pays 3.25%, Employee pays 0.75%.
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. GRATUITY PAGE -->
+        <div id="gratuity" class="page-section">
+            <h2 class="mb-4 text-primary"><i class="fa-solid fa-piggy-bank"></i> Payment of Gratuity Act</h2>
+            <div class="card act-card p-4">
+                <h5>Overview</h5>
+                <p>This Act provides for a scheme for the payment of gratuity to employees engaged in factories, mines, oilfields, plantations, ports, railway companies, shops or other establishments.</p>
+                <hr>
+                <h6>Calculation Formula:</h6>
+                <p class="bg-light p-2 border rounded">Last Drawn Salary × 15/26 × Completed Years of Service</p>
+                <p class="mt-2">Minimum eligibility: 5 years of continuous service.</p>
+            </div>
+        </div>
+
+        <!-- 5. SHOPS & ESTABLISHMENT PAGE -->
+        <div id="shops" class="page-section">
+            <h2 class="mb-4 text-primary"><i class="fa-solid fa-store"></i> Shops & Establishment Act</h2>
+            <div class="card act-card p-4">
+                <h5>Overview</h5>
+                <p>Regulates the conditions of work in commercial establishments (Shops, Hotels, Restaurants, Theatres, etc.).</p>
+                <hr>
+                <h6>Key Provisions:</h6>
+                <ul>
+                    <li>Working Hours (usually 9 hours/day).</li>
+                    <li>Weekly Holidays.</li>
+                    <li>Leave Entitlement (Casual, Sick, Earned).</li>
+                    <li>Registration of the establishment.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 6. BOCW PAGE -->
+        <div id="bocw" class="page-section">
+            <h2 class="mb-4 text-primary"><i class="fa-solid fa-hard-hat"></i> BOCW Act (Building & Other Construction Workers)</h2>
+            <div class="card act-card p-4">
+                <h5>Overview</h5>
+                <p>An Act to provide for the safety, health and welfare measures and development and regeneration of the Building and Other Construction Workers.</p>
+                <hr>
+                <h6>Applicability:</h6>
+                <p>Applicable to every establishment employing 10 or more workers on any day in the preceding 12 months.</p>
+                <div class="alert alert-warning mt-3">
+                    <i class="fa-solid fa-triangle-exclamation"></i> <strong>Warning:</strong> Strict penalties apply for non-registration.
+                </div>
+            </div>
+        </div>
+
+        <!-- 7. ENQUIRY FORM PAGE -->
+        <div id="enquiry" class="page-section">
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="card act-card p-5">
+                        <h3 class="text-center mb-4">Submit Your Query</h3>
+                        <form>
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Full Name</label>
+                                <input type="text" class="form-control" id="name" placeholder="Enter your name">
+                            </div>
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email Address</label>
+                                <input type="email" class="form-control" id="email" placeholder="name@example.com">
+                            </div>
+                            <div class="mb-3">
+                                <label for="act-select" class="form-label">Act Related To</label>
+                                <select class="form-select" id="act-select">
+                                    <option selected>Select an Act...</option>
+                                    <option value="pf">Provident Fund (PF)</option>
+                                    <option value="esic">ESIC</option>
+                                    <option value="gratuity">Gratuity</option>
+                                    <option value="shops">Shops & Establishment</option>
+                                    <option value="bocw">BOCW</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="message" class="form-label">Message</label>
+                                <textarea class="form-control" id="message" rows="5" placeholder="Describe your query..."></textarea>
+                            </div>
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary btn-lg">Send Enquiry</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom Script for Tab Navigation -->
+    <script>
+        function showPage(pageId, element) {
+            // 1. Hide all page sections
+            const sections = document.querySelectorAll('.page-section');
+            sections.forEach(section => {
+                section.classList.remove('active-section');
+            });
+
+            // 2. Show the selected page section
+            document.getElementById(pageId).classList.add('active-section');
+
+            // 3. Update Sidebar Active State
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+            });
+            element.classList.add('active');
+
+            // 4. Close sidebar on mobile after click
+            if(window.innerWidth < 768) {
+                document.getElementById('sidebar').classList.remove('active');
+            }
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+    </script>
+</body>
+</html>
